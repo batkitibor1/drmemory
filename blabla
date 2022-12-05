@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+typedef struct babu{
+        bool feher;
+        char fajta;
+}babu;
+
+
+typedef struct tabla{
+    babu** sorok;
+} tabla;
+
+babu babu_keszites(char fajta, bool feher) {
+    babu jelenlegi;
+    jelenlegi.fajta=fajta;
+    jelenlegi.feher = feher;
+    return jelenlegi;
+}
+
+tabla* kezdo_tabla() {
+    tabla* tab = (tabla*)malloc(sizeof(tabla));
+    tab->sorok = (babu**) malloc(sizeof (babu*));
+    for (int i =0; i<8; i++){
+        babu* jelenlegi_sor = (babu*)malloc(8*sizeof(babu));
+        tab->sorok[i] = jelenlegi_sor;
+    }
+    //a kezdotabla letrehozasa
+    char babuk[] = {'r','n','b','q','k','b','n','r'};
+    for (int i =0; i<8; i++) {
+        tab->sorok[0][i] = babu_keszites(babuk[i], false);
+        tab->sorok[1][i] = babu_keszites('p',false);
+        for (int j = 2; j<6; j++) {
+            tab->sorok[j][i] = babu_keszites(' ', true);
+        }
+        tab->sorok[6][i] = babu_keszites('p', true);
+        tab->sorok[7][i] = babu_keszites(babuk[i], true);
+    }
+    return tab;
+}
+
+void lepes(tabla* tab) {
+    printf("adj meg egy lepest: ugy hogy eloszor a kezdeti kooridnat majd utana spacel elvalasztva a cel kooridnatat adod meg kis betukkel!");
+    int honnan_poz_y,  hova_poz_y;
+    char chonnan_poz_x, chova_poz_x;
+    scanf("%c%d %c%d", &chonnan_poz_x, &honnan_poz_y, &chova_poz_x, &hova_poz_y);
+    int honnan_poz_x = chonnan_poz_x-'a'+1;
+    int hova_poz_x = chova_poz_x-'a'+1;
+    //todo teszteljuk hogy a megadott lepes lehetseges-e
+    babu* mozditando_babu = &(tab->sorok[honnan_poz_x][hova_poz_y]);
+    tab->sorok[hova_poz_x][hova_poz_y] = *mozditando_babu;
+    mozditando_babu->feher = NULL;
+    mozditando_babu->fajta = '\0';
+}
+
+void print_tabla(tabla* tab){
+    for (int i = 0; i<8; i++) {
+        for (int j = 0; j<8; j++){
+            char szin = tab->sorok[i][j].feher ? 'w' : 'b';
+            char fajta = tab->sorok[i][j].fajta;
+            printf("%c%c", szin, fajta);}
+        printf("\n");
+    }
+
+}
+
+int main() {
+    tabla* tab = kezdo_tabla();
+    print_tabla(tab);
+    printf("%c", tab->sorok[4][1].feher ? 'w' : 'b');
+//    lepes(tab);
+//    print_tabla(tab);
+//    lepes(tab);
+//    print_tabla(tab);
+
+    //printf("♔♕♖♗♘♙♚♛♜♝♞♟");
+}
